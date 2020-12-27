@@ -3,26 +3,23 @@ package com.example.examentais
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.example.examentais.model.Producto
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.karumi.dexter.Dexter
-import com.karumi.dexter.DexterBuilder
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.android.synthetic.main.activity_main.*
 import dmax.dialog.SpotsDialog
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.util.*
-import java.util.jar.Manifest
 
 
 class MainActivity : AppCompatActivity(){
@@ -32,15 +29,25 @@ class MainActivity : AppCompatActivity(){
     lateinit var storage: FirebaseStorage
     lateinit var storageReference : StorageReference
 
-
+    lateinit var productoSelect : Producto
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.reference
-
         dialog = SpotsDialog.Builder().setCancelable(false).setContext(this).build();
+        productoSelect = (this.intent.getSerializableExtra("Producto") as Producto?)!!
+
+        if (productoSelect!=null){
+
+
+            txtDescripcion.editText!!.setText(productoSelect.descripcion)
+            txtPrecio.editText!!.setText(productoSelect.precio)
+            txtStock.editText!!.setText(productoSelect.stock)
+
+
+        }
         btnImagen.setOnClickListener ({v->
             chooseImage();
         })
@@ -55,17 +62,17 @@ class MainActivity : AppCompatActivity(){
             val stock=txtStock.editText!!.text.toString()
             val ref = FirebaseDatabase.getInstance().getReference("productos")
             val newId = ref.push().key
-            //filepath tiene el archivo pero no se como hacer para insertar eso
-            val producto =  Producto(newId,descripcion,precio,stock)
-            /*
+            val direccion = UUID.randomUUID().toString()
+            val reference = storageReference.child("image/"+direccion)
             reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
                 dialog.dismiss()
                 Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
             }.addOnFailureListener( {e->
-                    dialog.dismiss()
-                    Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
-                }
-            */
+                dialog.dismiss()
+                Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
+            })
+
+            val producto =  Producto(newId,descripcion,precio,stock,direccion)
             ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
                 dialog.dismiss()
                 Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
@@ -74,7 +81,6 @@ class MainActivity : AppCompatActivity(){
                     Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
                 }
             )
-
         }
     }
     private fun validar(){

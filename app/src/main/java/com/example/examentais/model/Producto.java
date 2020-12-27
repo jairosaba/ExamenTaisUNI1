@@ -5,12 +5,22 @@ public class Producto {
     public String descripcion;
     public String precio;
     public String stock;
+    public String direccion;
 
-    public Producto(String uid, String descripcion, String precio, String stock) {
+
+    public Producto(String uid, String descripcion, String precio, String stock, String direccion) {
         this.uid = uid;
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
+        this.direccion = direccion;
+    }
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getUid() {
