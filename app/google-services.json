@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "540330002466",
+    "firebase_url": "https://examentais-772fe-default-rtdb.firebaseio.com",
+    "project_id": "examentais-772fe",
+    "storage_bucket": "examentais-772fe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540330002466:android:860195efbb1f9fb076e27b",
+        "android_client_info": {
+          "package_name": "com.example.examentais"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540330002466-q1qldou3rv64t4rpk9ot0qv195va9vn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.examentais",
+            "certificate_hash": "aeca4538ae8f34ba77e41ece94f7db010aa3eee6"
+          }
+        },
+        {
+          "client_id": "540330002466-o33ssklqk19ule8j70fvio0d6pogdhe9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6pkK3Fpt2kwVFOdWBfOjubJvZZ7h2tcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540330002466-o33ssklqk19ule8j70fvio0d6pogdhe9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
