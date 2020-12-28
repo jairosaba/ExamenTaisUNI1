@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity(){
     lateinit var storageReference : StorageReference
 
     lateinit var productoSelect : Producto
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -66,7 +69,7 @@ class MainActivity : AppCompatActivity(){
             txtDescripcion.editText!!.setText(productoSelect.descripcion)
             txtPrecio.editText!!.setText(productoSelect.precio)
             txtStock.editText!!.setText(productoSelect.stock)
-            act_categoria.setText(productoSelect.categoria)
+            act_categoria.setText(productoSelect.categoria,false)
             // boton de eliminar visible
             btnEliminar.isVisible=true;
             //cargar la imagen
