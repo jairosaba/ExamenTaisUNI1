@@ -49,8 +49,8 @@ class MainActivity : AppCompatActivity(){
         storageReference = storage.reference
         dialog = SpotsDialog.Builder().setCancelable(false).setContext(this).build();
 
-        val items = listOf("Material", "Design", "Components", "Android")
-        val adapter = ArrayAdapter<String>(this, R.layout.activity_main, items)
+        val items = arrayOf("Material", "Design", "Components", "Android")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,  items)
         act_categoria.threshold = 0
         act_categoria.setAdapter(adapter)
         act_categoria.setOnFocusChangeListener(View.OnFocusChangeListener { v, hasFocus ->
