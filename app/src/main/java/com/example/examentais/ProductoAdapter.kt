@@ -23,7 +23,7 @@ class ProductoAdapter(private val mContext: Context, private val listaProducto: 
      storage = FirebaseStorage.getInstance();
      storageReference = storage.reference
      layout.textView.text = producto.descripcion
-     layout.textView2.text= producto.stock + " un. en stock"
+     layout.textView2.text= producto.categoria
      layout.textView3.text= "S/. " + producto.precio
 
     val reference = storageReference.child("image/"+producto.direccion)

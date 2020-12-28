@@ -35,7 +35,8 @@ class ListProductos : AppCompatActivity() {
                             child.child("descripcion").getValue<String>() as String?,
                             child.child("precio").getValue<String>() as String?,
                             child.child("stock").getValue<String>() as String?,
-                            child.child("direccion").getValue<String>() as String?
+                            child.child("direccion").getValue<String>() as String?,
+                                child.child("categoria").getValue<String>() as String?
                         )
                     producto?.let { listProducts.add(producto) }
                 }
@@ -59,7 +60,7 @@ class ListProductos : AppCompatActivity() {
 
         }
         fabBottomBar.setOnClickListener ({v->
-            val prod = Producto(null,null,null,null,null)
+            val prod = Producto(null,null,null,null,null, null)
             val gson = Gson()
             val myJson: String = gson.toJson(prod)
             val intentAdd = Intent(applicationContext, MainActivity::class.java)
@@ -82,7 +83,8 @@ class ListProductos : AppCompatActivity() {
                             child.child("descripcion").getValue<String>() as String?,
                             child.child("precio").getValue<String>() as String?,
                             child.child("stock").getValue<String>() as String?,
-                            child.child("direccion").getValue<String>() as String?
+                            child.child("direccion").getValue<String>() as String?,
+                                child.child("categoria").getValue<String>() as String?
                         )
                     producto?.let { listProducts.add(producto) }
                 }

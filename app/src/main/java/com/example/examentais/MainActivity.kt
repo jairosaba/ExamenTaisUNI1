@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity(){
         storageReference = storage.reference
         dialog = SpotsDialog.Builder().setCancelable(false).setContext(this).build();
 
-        val items = arrayOf("Material", "Design", "Components", "Android")
+        val items = arrayOf("Polo", "Camisa", "Pantalón", "Short")
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,  items)
         act_categoria.threshold = 0
         act_categoria.setAdapter(adapter)
@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity(){
             txtDescripcion.editText!!.setText(productoSelect.descripcion)
             txtPrecio.editText!!.setText(productoSelect.precio)
             txtStock.editText!!.setText(productoSelect.stock)
+            act_categoria.setText(productoSelect.categoria)
             // boton de eliminar visible
             btnEliminar.isVisible=true;
             //cargar la imagen
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity(){
             val descripcion=txtDescripcion.editText!!.text.toString()
             val precio=txtPrecio.editText!!.text.toString()
             val stock=txtStock.editText!!.text.toString()
+            val categoria=til_categoria.editText!!.text.toString()
             var newId = ""
             var direccion = ""
             var ref = FirebaseDatabase.getInstance().getReference("productos")
@@ -146,7 +148,7 @@ class MainActivity : AppCompatActivity(){
                 }
 
 
-                val producto =  Producto(newId,descripcion,precio,stock,direccion)
+                val producto =  Producto(newId,descripcion,precio,stock,direccion, categoria)
                 ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
 
                     Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
@@ -181,7 +183,7 @@ class MainActivity : AppCompatActivity(){
                             }
 
 
-                            val producto =  Producto(newId,descripcion,precio,stock,direccion)
+                            val producto =  Producto(newId,descripcion,precio,stock,direccion,categoria)
                             ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
                                 Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
                                 //val intentAdd = Intent(applicationContext, ListProductos::class.java)

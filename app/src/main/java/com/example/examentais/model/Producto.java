@@ -6,14 +6,16 @@ public class Producto {
     public String precio;
     public String stock;
     public String direccion;
+    public String categoria;
 
 
-    public Producto(String uid, String descripcion, String precio, String stock, String direccion) {
+    public Producto(String uid, String descripcion, String precio, String stock, String direccion, String categoria) {
         this.uid = uid;
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
         this.direccion = direccion;
+        this.categoria = categoria;
     }
     public String getDireccion() {
         return direccion;
@@ -53,6 +55,14 @@ public class Producto {
 
     public void setStock(String stock) {
         this.stock = stock;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
 
