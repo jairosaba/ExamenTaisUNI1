@@ -126,15 +126,11 @@ class MainActivity : AppCompatActivity(){
             if (productoSelect.uid!=null){
                 newId = productoSelect.uid
                 direccion = productoSelect.direccion
-
-
                 val reference = storageReference.child("image/"+direccion)
                 if (filePath!=null){
                     reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
-                        dialog.dismiss()
                         Toast.makeText(this@MainActivity,"Acción Completada",Toast.LENGTH_SHORT).show()
                     }.addOnFailureListener( {e->
-                        dialog.dismiss()
                         Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
                     })
                 }
@@ -142,16 +138,17 @@ class MainActivity : AppCompatActivity(){
 
                 val producto =  Producto(newId,descripcion,precio,stock,direccion)
                 ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
-                    dialog.dismiss()
+
                     Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
                     //val intentAdd = Intent(applicationContext, ListProductos::class.java)
                     //startActivity(intentAdd)
-                    finish()
+
                 }.addOnFailureListener( {e->
-                    dialog.dismiss()
+
                     Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
                 }
                 )
+                //finish()
             }else{
                 newId = ref.push().key.toString()
                 direccion = UUID.randomUUID().toString()
@@ -166,11 +163,9 @@ class MainActivity : AppCompatActivity(){
                             val reference = storageReference.child("image/"+direccion)
                             if (filePath!=null){
                                 reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
-                                    dialog.dismiss()
                                     Toast.makeText(this@MainActivity,"Acción Completada",Toast.LENGTH_SHORT).show()
 
                                 }.addOnFailureListener( {e->
-                                    dialog.dismiss()
                                     Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
                                 })
                             }
@@ -178,18 +173,16 @@ class MainActivity : AppCompatActivity(){
 
                             val producto =  Producto(newId,descripcion,precio,stock,direccion)
                             ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
-                                dialog.dismiss()
                                 Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
-                                true
                                 //val intentAdd = Intent(applicationContext, ListProductos::class.java)
                                 //startActivity(intentAdd)
-                                finish()
+
 
                             }.addOnFailureListener( {e->
-                                dialog.dismiss()
                                 Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
                             }
                             )
+                            //finish()
                         }
                     }
                     override fun onCancelled(error: DatabaseError) {
@@ -199,7 +192,7 @@ class MainActivity : AppCompatActivity(){
 
                 })
             }
-
+        true
     }
     private fun validar(){
 
