@@ -9,41 +9,29 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent" >
 
-        <androidx.core.widget.NestedScrollView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="100dp"
-            android:clipToPadding="false">
-            <!-- Scrollable content -->
-        </androidx.core.widget.NestedScrollView>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ListView
-                android:id="@+id/listProductos"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="503dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
+                <ListView
+                    android:id="@+id/listProductos"
+                    android:layout_width="match_parent"
+                    android:layout_height="630dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></ListView>
 
-            </ListView>
+            </LinearLayout>
+        </ScrollView>
 
-        </LinearLayout>
-    </ScrollView>
         <com.google.android.material.bottomappbar.BottomAppBar
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -53,7 +41,6 @@
             app:backgroundTint="@color/design_default_color_primary"
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="10dp"
-
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -64,6 +51,5 @@
             app:layout_anchor="@id/bottomBar"
             android:src="@drawable/ic_baseline_add_24"
             />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
