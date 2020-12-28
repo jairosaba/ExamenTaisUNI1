@@ -22,8 +22,9 @@ class ProductoAdapter(private val mContext: Context, private val listaProducto: 
      val producto = listaProducto[position]
      storage = FirebaseStorage.getInstance();
      storageReference = storage.reference
-     layout.textView2.text = producto.descripcion
-     layout.textView3.text= producto.stock
+     layout.textView.text = producto.descripcion
+     layout.textView2.text= producto.stock + " un. en stock"
+     layout.textView3.text= "S/. " + producto.precio
 
     val reference = storageReference.child("image/"+producto.direccion)
      var  localFile = File.createTempFile(producto.direccion,"jpeg")
