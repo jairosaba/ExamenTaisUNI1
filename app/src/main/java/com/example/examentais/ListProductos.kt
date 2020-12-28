@@ -17,12 +17,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class ListProductos : AppCompatActivity() {
     private val listProducts:MutableList<Producto> = ArrayList()
-    private val database = Firebase.database
+
     private lateinit var messagesListener: ValueEventListener
-    val myRef = database.getReference("productos")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_productos)
+        val database = Firebase.database
+        val myRef = database.getReference("productos")
         myRef.addValueEventListener( object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 listProducts.clear()
@@ -37,7 +39,6 @@ class ListProductos : AppCompatActivity() {
                         )
                     producto?.let { listProducts.add(producto) }
                 }
-                Log.e("TAG", "messages:onCancelled: ${listProducts}")
                 val adapter = ProductoAdapter(this@ListProductos,listProducts)
                 listProductos.adapter = adapter
             }
@@ -66,5 +67,32 @@ class ListProductos : AppCompatActivity() {
             startActivity(intentAdd)
         })
 
+    }
+    override fun onResume() {
+        super.onResume()
+        val database = Firebase.database
+        val myRef = database.getReference("productos")
+        myRef.addValueEventListener( object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                listProducts.clear()
+                snapshot.children.forEach { child ->
+                    val producto: Producto? =
+                        Producto(
+                            child.child("uid").getValue<String>() as String?,
+                            child.child("descripcion").getValue<String>() as String?,
+                            child.child("precio").getValue<String>() as String?,
+                            child.child("stock").getValue<String>() as String?,
+                            child.child("direccion").getValue<String>() as String?
+                        )
+                    producto?.let { listProducts.add(producto) }
+                }
+                val adapter = ProductoAdapter(this@ListProductos,listProducts)
+                listProductos.adapter = adapter
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("TAG", "messages:onCancelled: ${error.message}")
+            }
+        })
     }
 }
