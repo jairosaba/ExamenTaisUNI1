@@ -2,11 +2,14 @@ package com.example.examentais
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.examentais.model.Producto
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -18,6 +21,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -37,17 +41,37 @@ class MainActivity : AppCompatActivity(){
         storage = FirebaseStorage.getInstance();
         storageReference = storage.reference
         dialog = SpotsDialog.Builder().setCancelable(false).setContext(this).build();
-        productoSelect = (this.intent.getSerializableExtra("Producto") as Producto?)!!
-
-        if (productoSelect!=null){
-
-
+        //lectura de los datos de envío
+        //productoSelect = (this.intent.getSerializableExtra("Producto") as Producto?)!!
+        //productoSelect =Producto("-MPaSdu1vjrafR4PGTuN","polo",null,null,"ff36b9bb-e0e7-4de8-9840-20a99107e201")
+        productoSelect =Producto(null,null,null,null,null)
+        btnEliminar.isVisible=false;
+        if (productoSelect.uid!=null){
+            //cargade datos
             txtDescripcion.editText!!.setText(productoSelect.descripcion)
             txtPrecio.editText!!.setText(productoSelect.precio)
             txtStock.editText!!.setText(productoSelect.stock)
+            // boton de eliminar visible
+            btnEliminar.isVisible=true;
+            //cargar la imagen
+            val reference = storageReference.child("image/"+productoSelect.direccion)
+            try {
+                var  localFile = File.createTempFile(productoSelect.direccion,"jpeg")
+                reference.getFile(localFile).addOnSuccessListener {
+                        taskSnapshot ->
+                    var bitmap = BitmapFactory.decodeFile(localFile.absolutePath);
+                    imageView2.setImageBitmap(bitmap)
 
+                }
+            }
+            catch (e:IOException){
+                e.printStackTrace()
+            }
 
         }
+        btnEliminar.setOnClickListener ({v->
+            eliminar();
+        })
         btnImagen.setOnClickListener ({v->
             chooseImage();
         })
@@ -55,18 +79,55 @@ class MainActivity : AppCompatActivity(){
             guardar();
         })
     }
+    private fun eliminar(){
+        val dialog= AlertDialog.Builder(this)
+        dialog.setTitle("Confirmación")
+        dialog.setMessage("Confirme si desea eliminar?")
+        dialog.setPositiveButton("SI"){dialogInterface,i->
+            var ref = FirebaseDatabase.getInstance().getReference("productos")
+            var newId =  productoSelect.uid
+            var direccion = productoSelect.direccion
+            ref.child(newId.toString()).removeValue().addOnSuccessListener { taskSnapshot ->
+                Toast.makeText(this@MainActivity,"Producto",Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener( {e->
+                Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
+            }
+            )
+            val reference = storageReference.child("image/"+direccion)
+            reference.delete().addOnSuccessListener { taskSnapshot ->
+                Toast.makeText(this@MainActivity,"Foto eliminada",Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener( {e->
+                Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
+            })
+
+            finish()
+        }
+        dialog.setNegativeButton("NO"){dialogInterface,i->
+            dialogInterface.dismiss()
+        }
+        dialog.show()
+        true
+    }
     private fun guardar(){
         if (filePath!=null){
             val descripcion=txtDescripcion.editText!!.text.toString()
             val precio=txtPrecio.editText!!.text.toString()
             val stock=txtStock.editText!!.text.toString()
-            val ref = FirebaseDatabase.getInstance().getReference("productos")
-            val newId = ref.push().key
-            val direccion = UUID.randomUUID().toString()
+            var newId = ""
+            var direccion = ""
+            var ref = FirebaseDatabase.getInstance().getReference("productos")
+            if (productoSelect.uid!=null){
+                newId = productoSelect.uid
+                direccion = productoSelect.direccion
+            }else{
+                newId = ref.push().key.toString()
+                direccion = UUID.randomUUID().toString()
+            }
+
             val reference = storageReference.child("image/"+direccion)
             reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
                 dialog.dismiss()
-                Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity,"Acción Completada",Toast.LENGTH_SHORT).show()
             }.addOnFailureListener( {e->
                 dialog.dismiss()
                 Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
