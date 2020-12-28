@@ -6,9 +6,12 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import com.example.examentais.model.Producto
 import com.google.firebase.database.DataSnapshot
@@ -45,6 +48,13 @@ class MainActivity : AppCompatActivity(){
         storage = FirebaseStorage.getInstance();
         storageReference = storage.reference
         dialog = SpotsDialog.Builder().setCancelable(false).setContext(this).build();
+
+        val items = listOf("Material", "Design", "Components", "Android")
+        val adapter = ArrayAdapter<String>(this, R.layout.activity_main, items)
+        act_categoria.threshold = 0
+        act_categoria.setAdapter(adapter)
+        act_categoria.setOnFocusChangeListener(View.OnFocusChangeListener { v, hasFocus ->
+            if(hasFocus) act_categoria.showDropDown() })
         //lectura de los datos de envío
         //productoSelect = (this.intent.getSerializableExtra("Producto") as Producto?)!!
         //productoSelect =Producto("-MPaSdu1vjrafR4PGTuN","polo",null,null,"ff36b9bb-e0e7-4de8-9840-20a99107e201")
