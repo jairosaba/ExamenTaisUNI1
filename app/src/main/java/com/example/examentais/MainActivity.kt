@@ -11,9 +11,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.example.examentais.model.Producto
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -44,7 +48,8 @@ class MainActivity : AppCompatActivity(){
         //lectura de los datos de envío
         //productoSelect = (this.intent.getSerializableExtra("Producto") as Producto?)!!
         //productoSelect =Producto("-MPaSdu1vjrafR4PGTuN","polo",null,null,"ff36b9bb-e0e7-4de8-9840-20a99107e201")
-        productoSelect =Producto(null,null,null,null,null)
+        val gson = Gson()
+        productoSelect = gson.fromJson(intent.getStringExtra("Producto"), Producto::class.java)
         btnEliminar.isVisible=false;
         if (productoSelect.uid!=null){
             //cargade datos
@@ -109,40 +114,92 @@ class MainActivity : AppCompatActivity(){
         true
     }
     private fun guardar(){
-        if (filePath!=null){
+
             val descripcion=txtDescripcion.editText!!.text.toString()
             val precio=txtPrecio.editText!!.text.toString()
             val stock=txtStock.editText!!.text.toString()
             var newId = ""
             var direccion = ""
             var ref = FirebaseDatabase.getInstance().getReference("productos")
+            var exist = false
+
             if (productoSelect.uid!=null){
                 newId = productoSelect.uid
                 direccion = productoSelect.direccion
-            }else{
-                newId = ref.push().key.toString()
-                direccion = UUID.randomUUID().toString()
-            }
 
-            val reference = storageReference.child("image/"+direccion)
-            reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
-                dialog.dismiss()
-                Toast.makeText(this@MainActivity,"Acción Completada",Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener( {e->
-                dialog.dismiss()
-                Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
-            })
 
-            val producto =  Producto(newId,descripcion,precio,stock,direccion)
-            ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
-                dialog.dismiss()
-                Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener( {e->
+                val reference = storageReference.child("image/"+direccion)
+                if (filePath!=null){
+                    reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
+                        dialog.dismiss()
+                        Toast.makeText(this@MainActivity,"Acción Completada",Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener( {e->
+                        dialog.dismiss()
+                        Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
+                    })
+                }
+
+
+                val producto =  Producto(newId,descripcion,precio,stock,direccion)
+                ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
+                    dialog.dismiss()
+                    Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
+                    //val intentAdd = Intent(applicationContext, ListProductos::class.java)
+                    //startActivity(intentAdd)
+                    finish()
+                }.addOnFailureListener( {e->
                     dialog.dismiss()
                     Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
                 }
-            )
-        }
+                )
+            }else{
+                newId = ref.push().key.toString()
+                direccion = UUID.randomUUID().toString()
+                var ref2=FirebaseDatabase.getInstance().getReference().child("productos");
+                ref2.orderByChild("descripcion").equalTo(descripcion).addValueEventListener(object :
+                    ValueEventListener{
+                    override fun onDataChange(dataSnapshot: DataSnapshot){
+                        if(dataSnapshot.exists()) {
+
+                        }
+                        else{
+                            val reference = storageReference.child("image/"+direccion)
+                            if (filePath!=null){
+                                reference.putFile(filePath!!).addOnSuccessListener { taskSnapshot ->
+                                    dialog.dismiss()
+                                    Toast.makeText(this@MainActivity,"Acción Completada",Toast.LENGTH_SHORT).show()
+
+                                }.addOnFailureListener( {e->
+                                    dialog.dismiss()
+                                    Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
+                                })
+                            }
+
+
+                            val producto =  Producto(newId,descripcion,precio,stock,direccion)
+                            ref.child(newId.toString()).setValue(producto).addOnSuccessListener { taskSnapshot ->
+                                dialog.dismiss()
+                                Toast.makeText(this@MainActivity,"Guardado",Toast.LENGTH_SHORT).show()
+                                true
+                                //val intentAdd = Intent(applicationContext, ListProductos::class.java)
+                                //startActivity(intentAdd)
+                                finish()
+
+                            }.addOnFailureListener( {e->
+                                dialog.dismiss()
+                                Toast.makeText(this@MainActivity,"Error",Toast.LENGTH_SHORT).show()
+                            }
+                            )
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+
+                })
+            }
+
     }
     private fun validar(){
 
